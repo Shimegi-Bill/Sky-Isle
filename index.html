@@ -20,7 +20,7 @@ body{height:100%;margin:0;box-sizing:border-box;background:var(--page);color:var
 </style>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="星翼浮島">
 <meta name="application-name" content="星翼浮島">
 <meta name="theme-color" content="#070a18">
@@ -32,8 +32,27 @@ body{height:100%;margin:0;box-sizing:border-box;background:var(--page);color:var
 :root{--sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px)}
 html,body{margin:0;height:100%;overflow:hidden;background:#0b1026;overscroll-behavior:none}
 body{padding:0!important}
-#root{position:fixed;top:0;left:0;right:0;bottom:0;height:auto}
+#root{position:absolute;top:0;left:0;width:100%;height:var(--app-h,100%)}
 </style>
+<script>
+/* iPhone 主畫面 App：每次開啟、返回前景、轉向後，重新對齊畫面高度同觸控位置 */
+(function () {
+  var fix = function () {
+    try {
+      document.documentElement.style.setProperty('--app-h', window.innerHeight + 'px');
+      if (window.scrollX || window.scrollY) window.scrollTo(0, 0);
+    } catch (e) { /* 略過 */ }
+  };
+  var burst = function () { fix(); [60, 250, 600, 1200].forEach(function (t) { setTimeout(fix, t); }); };
+  burst();
+  window.addEventListener('resize', fix);
+  window.addEventListener('orientationchange', burst);
+  window.addEventListener('pageshow', burst);
+  window.addEventListener('load', burst);
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) burst(); });
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', fix);
+})();
+</script>
 </head>
 <body>
 <div id="root"></div>
